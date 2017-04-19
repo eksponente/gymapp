@@ -23,21 +23,9 @@ func InitDB() {
 	Dbm = &gorp.DbMap{Db: db.Db, Dialect: gorp.PostgresDialect{}}
 
 	goose.Run("up", db.Db, "../migrations")
-	// setColumnSizes := func(t *gorp.TableMap, colSizes map[string]int) {
-	// 	for col, size := range colSizes {
-	// 		t.ColMap(col).MaxSize = size
-	// 	}
-	// }
-	// t := Dbm.AddTable(models.User{}).SetKeys(true, "UserId")
-	// t.ColMap("Password").Transient = true
-	// setColumnSizes(t, map[string]int{
-	// 	"Username": 20,
-	// 	"Name":     100,
-	// })
 	Dbm.AddTableWithName(models.User{}, "users").SetKeys(true, "user_id")
 
 	Dbm.TraceOn("[gorp]", r.INFO)
-	// Dbm.CreateTables()
 }
 
 type GorpController struct {
