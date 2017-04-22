@@ -79,8 +79,9 @@ func (c *GorpController) Rollback() r.Result {
 	return nil
 }
 
-func RetrieveUser(username string, c App) (user models.User, err error) {
-	err = c.Txn.SelectOne(&user, "SELECT * FROM users WHERE Username=$1", username)
+func RetrieveUser(email string, c App) (user models.User, err error) {
+	fmt.Println(email)
+	err = c.Txn.SelectOne(&user, "SELECT * FROM users WHERE Email=$1", email)
 	return
 }
 
@@ -90,7 +91,7 @@ func RetrieveToken(t string, c App) (token models.Token, err error) {
 }
 
 func UpdateTokenExpDate(t string, exp string, c App) (err error) {
-	stmt, err := c.Txn.Prepare("UPDATE tokens SET expirationdate = '$1' WHERE token = '$2';")
+	stmt, err := c.Txn.Prepare("UPDATE \"tokens\" SET \"expirationdate\" = $1 WHERE \"token\" = '$2';")
 	if err != nil {
 		return err
 	}
@@ -102,15 +103,44 @@ func UpdateTokenExpDate(t string, exp string, c App) (err error) {
 	return err
 }
 
+func DeleteToken(t string, c App) (err error) {
+	stmt, err := c.Txn.Prepare("DELETE FROM \"tokens\" WHERE \"token\" = $1;")
+	if err != nil {
+		return
+	}
+	defer stmt.Close()
+	if _, err = stmt.Exec(t); err != nil {
+		c.Txn.Rollback()
+		return
+	}
+	return
+}
+
 func CreateToken(t string, user models.User, exp string, c App) (err error) {
 	stmt, err := c.Txn.Prepare("insert into \"tokens\" (\"user_id\",\"token\",\"expirationdate\") values ($1,$2,$3);")
 	if err != nil {
-		return err
+		return
 	}
 	defer stmt.Close()
 	if _, err = stmt.Exec(user.UserId, t, exp); err != nil {
 		c.Txn.Rollback()
-		return err
+		return
 	}
-	return err
+	return
+}
+
+func CreateUser(name, username, email, password string, c App) (err error, rows int64) {
+	stmt, err := c.Txn.Prepare("insert into \"users\" (\"name\", \"username\", \"email\", \"issuperuser\", \"password\") VALUES ($1, $2, $3, $4, $5);")
+	if err != nil {
+		return
+	}
+	defer stmt.Close()
+	res, err := stmt.Exec(name, username, email, false, password)
+	if err != nil {
+		c.Txn.Rollback()
+		return
+	}
+	rows, _ = res.RowsAffected()
+
+	return
 }

@@ -8,8 +8,12 @@ module:testrunner
 
 
 GET      /                                       App.Index
-POST     /requestToken                                       App.RequestToken
-POST     /renewToken                                       App.RenewToken
+POST     /requestToken                           App.RequestToken
+POST     /renewToken                             App.RenewToken
+POST     /destroyToken                           App.DestroyToken
+
+
+POST     /createUser                             App.CreateUser
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
