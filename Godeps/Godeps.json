@@ -1,0 +1,125 @@
+{
+	"ImportPath": "gymapp",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v79",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/agtorre/gocolorize",
+			"Comment": "v1.0.0-1-g99fea4b",
+			"Rev": "99fea4bc9517f07eea8194702cb7076f4845b7de"
+		},
+		{
+			"ImportPath": "github.com/asaskevich/govalidator",
+			"Comment": "v5-39-g2c14e1c",
+			"Rev": "2c14e1cca90af49b3b21fe2d7aaa8cc7f9da2ff8"
+		},
+		{
+			"ImportPath": "github.com/coopernurse/gorp",
+			"Comment": "1.2-90-g9cd2b5e",
+			"Rev": "9cd2b5ef5b82fde4e7c51776ac3f94398b8af076"
+		},
+		{
+			"ImportPath": "github.com/dgrijalva/jwt-go",
+			"Comment": "v3.0.0-17-g2268707",
+			"Rev": "2268707a8f0843315e2004ee4f1d021dc08baedf"
+		},
+		{
+			"ImportPath": "github.com/klauspost/compress/flate",
+			"Comment": "v1.2.1-6-ge80ca55",
+			"Rev": "e80ca55b53e5e6f53deed5c7842e7b7da95e1dc7"
+		},
+		{
+			"ImportPath": "github.com/klauspost/compress/gzip",
+			"Comment": "v1.2.1-6-ge80ca55",
+			"Rev": "e80ca55b53e5e6f53deed5c7842e7b7da95e1dc7"
+		},
+		{
+			"ImportPath": "github.com/klauspost/compress/zlib",
+			"Comment": "v1.2.1-6-ge80ca55",
+			"Rev": "e80ca55b53e5e6f53deed5c7842e7b7da95e1dc7"
+		},
+		{
+			"ImportPath": "github.com/klauspost/cpuid",
+			"Comment": "v1.0",
+			"Rev": "09cded8978dc9e80714c4d85b0322337b0a1e5e0"
+		},
+		{
+			"ImportPath": "github.com/lib/pq",
+			"Comment": "go1.0-cutoff-166-g2704adc",
+			"Rev": "2704adc878c21e1329f46f6e56a1c387d788ff94"
+		},
+		{
+			"ImportPath": "github.com/lib/pq/oid",
+			"Comment": "go1.0-cutoff-166-g2704adc",
+			"Rev": "2704adc878c21e1329f46f6e56a1c387d788ff94"
+		},
+		{
+			"ImportPath": "github.com/pressly/goose",
+			"Comment": "v1.0-14-g1da0b16",
+			"Rev": "1da0b166cb6812e4fd42bc2016b6b9cfec37ca22"
+		},
+		{
+			"ImportPath": "github.com/revel/config",
+			"Comment": "v0.13.0-2-g662332b",
+			"Rev": "662332b741dd464a886ab0901379c02b9bc5dc30"
+		},
+		{
+			"ImportPath": "github.com/revel/modules/db/app",
+			"Comment": "v0.14.0",
+			"Rev": "209cc8b2b7ed93a55067bc0db97707b1432e49c4"
+		},
+		{
+			"ImportPath": "github.com/revel/modules/static/app/controllers",
+			"Comment": "v0.14.0",
+			"Rev": "209cc8b2b7ed93a55067bc0db97707b1432e49c4"
+		},
+		{
+			"ImportPath": "github.com/revel/modules/testrunner/app",
+			"Comment": "v0.14.0",
+			"Rev": "209cc8b2b7ed93a55067bc0db97707b1432e49c4"
+		},
+		{
+			"ImportPath": "github.com/revel/modules/testrunner/app/controllers",
+			"Comment": "v0.14.0",
+			"Rev": "209cc8b2b7ed93a55067bc0db97707b1432e49c4"
+		},
+		{
+			"ImportPath": "github.com/revel/revel",
+			"Comment": "v0.14.0",
+			"Rev": "75d66c3c990f01deb5ff2045c04da7eea5be39b2"
+		},
+		{
+			"ImportPath": "github.com/revel/revel/testing",
+			"Comment": "v0.14.0",
+			"Rev": "75d66c3c990f01deb5ff2045c04da7eea5be39b2"
+		},
+		{
+			"ImportPath": "github.com/robfig/pathtree",
+			"Rev": "41257a1839e945fce74afd070e02bab2ea2c776a"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/bcrypt",
+			"Rev": "c2303dcbe84172e0c0da4c9f083eeca54c06f298"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/blowfish",
+			"Rev": "c2303dcbe84172e0c0da4c9f083eeca54c06f298"
+		},
+		{
+			"ImportPath": "golang.org/x/net/websocket",
+			"Rev": "5602c733f70afc6dcec6766be0d5034d4c4f14de"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "9a7256cb28ed514b4e1e5f68959914c4c28a92e0"
+		},
+		{
+			"ImportPath": "gopkg.in/fsnotify.v1",
+			"Comment": "v1.4.2",
+			"Rev": "629574ca2a5df945712d3079857300b5e4da0236"
+		}
+	]
+}
