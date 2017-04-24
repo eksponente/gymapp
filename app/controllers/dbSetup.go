@@ -25,6 +25,7 @@ type App struct {
 //InitDB initializes the database for the application usages
 func InitDB() {
 	// TODO: set the db.spec as environment variable as per http://revel.github.io/manual/appconf.html
+	fmt.Println("ZDAROVA ADFGADFAIFJERI")
 	fmt.Print(r.Config.String("db.spec"))
 	db.Init()
 	Dbm = &gorp.DbMap{Db: db.Db, Dialect: gorp.PostgresDialect{}}
