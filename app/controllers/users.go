@@ -11,12 +11,11 @@ func (c App) CreateUser() revel.Result {
 	email := c.Params.Form.Get("email")
 	password := c.Params.Form.Get("password")
 	name := c.Params.Form.Get("name")
-	username := c.Params.Form.Get("username")
 
-	if email == "" || name == "" || username == "" || password == "" {
+	if email == "" || name == "" || password == "" {
 		m := make(map[string]string)
 		c.Response.Status = 400
-		m["error"] = "Required fields: email, name, username, password."
+		m["error"] = "Required fields: email, name, password."
 		return c.RenderJSON(m)
 	}
 
@@ -29,10 +28,10 @@ func (c App) CreateUser() revel.Result {
 		return c.RenderJSON(m)
 	}
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	err, rows := CreateUser(name, username, email, string(hashedPassword), c)
+	err, rows := CreateUser(name, email, string(hashedPassword), c)
 	if rows == 0 { //no rows have been created
 		m := make(map[string]string)
-		m["error"] = "User with that email already exists."
+		m["message"] = "User with that email already exists."
 		c.Response.Status = 400
 		return c.RenderJSON(m)
 	}

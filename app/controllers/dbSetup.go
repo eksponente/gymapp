@@ -24,8 +24,6 @@ type App struct {
 
 //InitDB initializes the database for the application usages
 func InitDB() {
-	// TODO: set the db.spec as environment variable as per http://revel.github.io/manual/appconf.html
-	fmt.Println("ZDAROVA ADFGADFAIFJERI")
 	fmt.Print(r.Config.String("db.spec"))
 	db.Init()
 	Dbm = &gorp.DbMap{Db: db.Db, Dialect: gorp.PostgresDialect{}}
@@ -130,13 +128,13 @@ func CreateToken(t string, user models.User, exp string, c App) (err error) {
 	return
 }
 
-func CreateUser(name, username, email, password string, c App) (err error, rows int64) {
-	stmt, err := c.Txn.Prepare("insert into \"users\" (\"name\", \"username\", \"email\", \"issuperuser\", \"password\") VALUES ($1, $2, $3, $4, $5);")
+func CreateUser(name, email, password string, c App) (err error, rows int64) {
+	stmt, err := c.Txn.Prepare("insert into \"users\" (\"name\", \"email\", \"issuperuser\", \"password\") VALUES ($1, $2, $3, $4);")
 	if err != nil {
 		return
 	}
 	defer stmt.Close()
-	res, err := stmt.Exec(name, username, email, false, password)
+	res, err := stmt.Exec(name, email, false, password)
 	if err != nil {
 		c.Txn.Rollback()
 		return
