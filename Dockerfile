@@ -1,4 +1,4 @@
-FROM golang:1.4.2-onbuild
+FROM golang:1.4.2
 
 ADD . /go/src/gymapp
 
