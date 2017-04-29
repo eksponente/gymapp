@@ -3,6 +3,7 @@ package tests
 import (
 	"fmt"
 
+	"github.com/go-gorp/gorp"
 	db "github.com/revel/modules/db/app"
 	"github.com/revel/revel/testing"
 
@@ -26,6 +27,10 @@ func (t *AppTest) TestThatIndexPageWorks() {
 func (t *AppTest) TestDatabaseConnection() {
 	fmt.Print(r.Config.String("db.spec"))
 	db.Init()
+	t.AssertOk()
+	Dbm := &gorp.DbMap{Db: db.Db, Dialect: gorp.PostgresDialect{}}
+	Dbm.Exec("SELECT * from users;")
+	t.AssertOk()
 }
 
 func (t *AppTest) After() {
