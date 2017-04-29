@@ -34,7 +34,7 @@ func (t *AppTest) TestDatabaseConnection() {
 	goose.Run("up", db.Db, "../app/migrations")
 	var user models.User
 	Dbm.SelectOne(&user, "SELECT * FROM users WHERE Email=$1", "rugilena@gmail.com")
-	t.AssertEqual(user.Email, "rugilena@gmail.com")
+	t.AssertEqual(user.IsSuperuser, true)
 
 }
 
