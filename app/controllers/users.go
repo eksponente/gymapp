@@ -7,7 +7,7 @@ import (
 )
 
 //Index test creating user
-func (c App) CreateUser() revel.Result {
+func (c User) Create() revel.Result {
 	email := c.Params.Form.Get("email")
 	password := c.Params.Form.Get("password")
 	name := c.Params.Form.Get("name")
@@ -28,7 +28,7 @@ func (c App) CreateUser() revel.Result {
 		return c.RenderJSON(m)
 	}
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	err, rows := CreateUser(name, email, string(hashedPassword), c)
+	err, rows := CreateUser(name, email, string(hashedPassword), c.GorpController)
 	if rows == 0 { //no rows have been created
 		m := make(map[string]string)
 		m["message"] = "User with that email already exists."

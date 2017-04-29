@@ -1,3 +1,4 @@
+// @SubApi User API [/token]
 package controllers
 
 import (
@@ -11,8 +12,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-//RequestToken request a token for login
-func (c App) RequestToken() revel.Result {
+// @Title Request
+// @Description Request a token
+// @Param   email     form    string     true        "User email"
+// @Param   password     form    string     true        "User password"
+// @Success 200 {object} string
+// @Failure 404 {object} APIError "Invalid email."
+// @Router /token/request/ [post]
+func (c Token) Request() revel.Result {
 	email := c.Params.Form.Get("email")
 	password := c.Params.Form.Get("password")
 
@@ -25,7 +32,7 @@ func (c App) RequestToken() revel.Result {
 	}
 
 	//Check if username and password valid
-	user, err1 := RetrieveUser(email, c)
+	user, err1 := RetrieveUser(email, c.GorpController)
 	if err1 != nil {
 		m := make(map[string]string)
 		c.Response.Status = 404
@@ -50,7 +57,7 @@ func (c App) RequestToken() revel.Result {
 	secret, _ := revel.Config.String("secret")
 	signedToken, _ := token.SignedString([]byte(secret))
 	fmt.Println(signedToken)
-	CreateToken(string(signedToken), user, claims["exp"].(string), c)
+	CreateToken(string(signedToken), user, claims["exp"].(string), c.GorpController)
 
 	//return the token
 	m := map[string]interface{}{
@@ -63,9 +70,9 @@ func (c App) RequestToken() revel.Result {
 }
 
 //RenewToken can be used to renew a certain token to be valid up until 2 weeks from now.
-func (c App) RenewToken() revel.Result {
+func (c Token) Renew() revel.Result {
 	t := c.Params.Form.Get("token")
-	_, err := RetrieveToken(t, c)
+	_, err := RetrieveToken(t, c.GorpController)
 	if err != nil {
 		m := make(map[string]string)
 		c.Response.Status = 404
@@ -73,7 +80,7 @@ func (c App) RenewToken() revel.Result {
 		return c.RenderJSON(m)
 	}
 	exp := time.Now().Add(time.Hour * 24 * 14).Format(time.RFC3339)
-	err = UpdateTokenExpDate(t, exp, c)
+	err = UpdateTokenExpDate(t, exp, c.GorpController)
 	if err != nil {
 		m := make(map[string]string)
 		m["error"] = "Database error."
@@ -92,16 +99,16 @@ func (c App) RenewToken() revel.Result {
 }
 
 //DestroyToken can be used to renew a certain token to be valid up until 2 weeks from now.
-func (c App) DestroyToken() revel.Result {
+func (c Token) Destroy() revel.Result {
 	t := c.Params.Form.Get("token")
-	_, err := RetrieveToken(t, c)
+	_, err := RetrieveToken(t, c.GorpController)
 	if err != nil {
 		m := make(map[string]string)
 		m["error"] = "Token not found."
 		c.Response.Status = 404
 		return c.RenderJSON(m)
 	}
-	err = DeleteToken(t, c)
+	err = DeleteToken(t, c.GorpController)
 	if err != nil {
 		m := make(map[string]string)
 		m["error"] = "Database error."

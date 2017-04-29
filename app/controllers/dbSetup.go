@@ -22,6 +22,14 @@ type App struct {
 	GorpController
 }
 
+type Token struct {
+	GorpController
+}
+
+type User struct {
+	GorpController
+}
+
 //InitDB initializes the database for the application usages
 func InitDB() {
 	fmt.Print(r.Config.String("db.spec"))
@@ -78,18 +86,17 @@ func (c *GorpController) Rollback() r.Result {
 	return nil
 }
 
-func RetrieveUser(email string, c App) (user models.User, err error) {
-	fmt.Println(email)
+func RetrieveUser(email string, c GorpController) (user models.User, err error) {
 	err = c.Txn.SelectOne(&user, "SELECT * FROM users WHERE Email=$1", email)
 	return
 }
 
-func RetrieveToken(t string, c App) (token models.Token, err error) {
+func RetrieveToken(t string, c GorpController) (token models.Token, err error) {
 	err = c.Txn.SelectOne(&token, "SELECT * FROM tokens WHERE Token=$1", t)
 	return
 }
 
-func UpdateTokenExpDate(t string, exp string, c App) (err error) {
+func UpdateTokenExpDate(t string, exp string, c GorpController) (err error) {
 	stmt, err := c.Txn.Prepare("UPDATE \"tokens\" SET \"expirationdate\" = $1 WHERE \"token\" = '$2';")
 	if err != nil {
 		return err
@@ -102,7 +109,7 @@ func UpdateTokenExpDate(t string, exp string, c App) (err error) {
 	return err
 }
 
-func DeleteToken(t string, c App) (err error) {
+func DeleteToken(t string, c GorpController) (err error) {
 	stmt, err := c.Txn.Prepare("DELETE FROM \"tokens\" WHERE \"token\" = $1;")
 	if err != nil {
 		return
@@ -115,7 +122,7 @@ func DeleteToken(t string, c App) (err error) {
 	return
 }
 
-func CreateToken(t string, user models.User, exp string, c App) (err error) {
+func CreateToken(t string, user models.User, exp string, c GorpController) (err error) {
 	stmt, err := c.Txn.Prepare("insert into \"tokens\" (\"user_id\",\"token\",\"expirationdate\") values ($1,$2,$3);")
 	if err != nil {
 		return
@@ -128,7 +135,7 @@ func CreateToken(t string, user models.User, exp string, c App) (err error) {
 	return
 }
 
-func CreateUser(name, email, password string, c App) (err error, rows int64) {
+func CreateUser(name, email, password string, c GorpController) (err error, rows int64) {
 	stmt, err := c.Txn.Prepare("insert into \"users\" (\"name\", \"email\", \"issuperuser\", \"password\") VALUES ($1, $2, $3, $4);")
 	if err != nil {
 		return
