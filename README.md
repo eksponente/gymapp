@@ -11,59 +11,152 @@ To get the IP
     eb status
 
 ## API documentation
-   **Title**
+# <<Tokens>>
+   **Request a token**
    ----
-     <_Additional information about your API call. Try to use verbs that match both request type (fetching vs modifying) and plurality (one vs multiple)._>
 
-   * **URL**
+   * **`POST` /token/request**
+   * **Form Params**
 
-     <_The URL Structure (path only, no root url)_>
-
-   * **Method:**
-
-     <_The request type_>
-
-     `GET` | `POST` | `DELETE` | `PUT`
-
-   *  **URL Params**
-
-      <_If URL params exist, specify them in accordance with name mentioned in URL section. Separate into optional and required. Document data constraints._>
-
-      **Required:**
-
-      `id=[integer]`
-
-      **Optional:**
-
-      `photo_id=[alphanumeric]`
-
-   * **Data Params**
-
-     <_If making a post request, what should the body payload look like? URL Params rules apply here too._>
+     **Required:**
+     <_User email and password are required parameters._>
+      `email=[string]`
+      `password=[string]`
 
    * **Success Response:**
 
-     <_What should the status code be on success and is there any returned data? This is useful when people need to to know what their callbacks should expect!_>
+     <_Returns a token valid for 2 weeks and 200 response._>
 
-     * **Code:** 200 <br />
-       **Content:** `{ id : 12 }`
+     * **Code:** 200
+       **Content:**
+       ```json
+       {
+        "error": null,
+        "expiration": "2017-05-14T13:03:07+01:00",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJ1Z2lsZW5hQGdtYWlsLmNvbSIsImV4cCI6IjIwMTctMDUtMTRUMTM6MDM6MDcrMDE6MDAifQ.utL_J900CAIif_FM7UcJiJomRZm_R5VSG8hj6aNfgOA"
+        }
+       ```
 
    * **Error Response:**
 
-     <_Most endpoints will have many ways they can fail. From unauthorized access, to wrongful parameters etc. All of those should be liste d here. It might seem repetitive, but it helps prevent assumptions from being made where they should be._>
+     * **Code:** 404
+       **Content:**
+       ```json
+       {
+         "error": "Invalid email or password."
+        }
+       ```
 
-     * **Code:** 401 UNAUTHORIZED <br />
-       **Content:** `{ error : "Log in" }`
+   **Renew a token**
+   ----
 
-     OR
+   * **`POST` /token/renew**
+   * **Form Params**
 
-     * **Code:** 422 UNPROCESSABLE ENTRY <br />
-       **Content:** `{ error : "Email Invalid" }`
+     **Required:**
+     <_Only required paramenter - the active token which we want to renew._>
+      `token=[string]`
 
-   * **Sample Call:**
+   * **Success Response:**
 
-     <_Just a sample call to your endpoint in a runnable format ($.ajax call or a curl request) - this makes life easier and more predictable._>
+     <_Returns same token valid for 2 weeks from now and a 200 response._>
 
-   * **Notes:**
+     * **Code:** 200
+       **Content:**
+       ```json
+       {
+        "error": null,
+        "expiration": "2017-05-14T13:03:07+01:00",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJ1Z2lsZW5hQGdtYWlsLmNvbSIsImV4cCI6IjIwMTctMDUtMTRUMTM6MDM6MDcrMDE6MDAifQ.utL_J900CAIif_FM7UcJiJomRZm_R5VSG8hj6aNfgOA"
+        }
+       ```
 
-     <_This is where all uncertainties, commentary, discussion etc. can go. I recommend timestamping and identifying oneself when leaving comments here._>
+   * **Error Response:**
+
+     <_Returns 404 if the token is already expired or does not exist._>
+
+     * **Code:** 404
+       **Content:**
+       ```json
+       {
+         "error": "Token not found or already expired."
+        }
+       ```
+
+   **Destroy a token**
+   ----
+
+   * **`POST` /token/destroy**
+   * **Form Params**
+
+     **Required:**
+     <_Only required paramenter - the active token which we want to renew._>
+      `token=[string]`
+
+   * **Success Response:**
+
+     <_Returns a 200 response.._>
+
+     * **Code:** 200
+       **Content:**
+       ```json
+       {
+        "error": null,
+        }
+       ```
+
+   * **Error Response:**
+
+     <_Returns 404 if the token is not found._>
+
+     * **Code:** 404
+       **Content:**
+       ```json
+       {
+         "error": "Token not found."
+        }
+       ```
+
+# <<Users>>
+   **Create a user**
+   ----
+
+   * **`POST` /user/create**
+   * **Form Params**
+
+     **Required:**
+     <_User email, password and name. The email must be unique._>
+      `email=[string]`
+      `password=[string]`
+      `name=[string]`
+
+   * **Success Response:**
+
+     <_Returns a 201 response._>
+
+     * **Code:** 201
+       **Content:**
+       ```json
+       {
+        "error": null
+        }
+       ```
+
+   * **Error Response:**
+
+     * **Code:** 400
+       **Content:**
+       <_If email is in an invalid format, it will not create the user._>
+       ```json
+       {
+         "error": "Invalid email."
+        }
+       ```
+    * **Code:** 400
+       **Content:**
+       <_If there already is a user with that email, returns an error._>
+       ```json
+       {
+         "error": "User with that email already exists."
+        }
+       ```

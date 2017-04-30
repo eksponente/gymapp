@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"gymapp/app/models"
+	"time"
 
 	"github.com/coopernurse/gorp"
 	_ "github.com/lib/pq" //postgres driver
@@ -16,16 +17,21 @@ import (
 var (
 	//Dbm database mapping
 	Dbm *gorp.DbMap
+	//Location used for timezone parsing
+	Location *time.Location
 )
 
+//App is a GorpController wrapper for App endpoints
 type App struct {
 	GorpController
 }
 
+//Token is a GorpController wrapper for token api endpoints
 type Token struct {
 	GorpController
 }
 
+//User is a GorpController wrapper for User endpoints
 type User struct {
 	GorpController
 }
@@ -35,6 +41,11 @@ func InitDB() {
 	fmt.Print(r.Config.String("db.spec"))
 	db.Init()
 	Dbm = &gorp.DbMap{Db: db.Db, Dialect: gorp.PostgresDialect{}}
+	var err error
+	Location, err = time.LoadLocation(r.Config.StringDefault("location", "Europe/London"))
+	if err != nil {
+		panic(err)
+	}
 
 	//run the migrations
 	goose.Run("up", db.Db, "../migrations")
@@ -86,18 +97,21 @@ func (c *GorpController) Rollback() r.Result {
 	return nil
 }
 
+//RetrieveUser will retrieve a user from the database
 func RetrieveUser(email string, c GorpController) (user models.User, err error) {
 	err = c.Txn.SelectOne(&user, "SELECT * FROM users WHERE Email=$1", email)
 	return
 }
 
+//RetrieveToken will retrieve a token from the database
 func RetrieveToken(t string, c GorpController) (token models.Token, err error) {
 	err = c.Txn.SelectOne(&token, "SELECT * FROM tokens WHERE Token=$1", t)
 	return
 }
 
+//UpdateTokenExpDate will update a token expiration date
 func UpdateTokenExpDate(t string, exp string, c GorpController) (err error) {
-	stmt, err := c.Txn.Prepare("UPDATE \"tokens\" SET \"expirationdate\" = $1 WHERE \"token\" = '$2';")
+	stmt, err := c.Txn.Prepare("UPDATE \"tokens\" SET \"expirationdate\" = $1 WHERE \"token\" = $2;")
 	if err != nil {
 		return err
 	}
@@ -109,6 +123,7 @@ func UpdateTokenExpDate(t string, exp string, c GorpController) (err error) {
 	return err
 }
 
+//DeleteToken will delete a token
 func DeleteToken(t string, c GorpController) (err error) {
 	stmt, err := c.Txn.Prepare("DELETE FROM \"tokens\" WHERE \"token\" = $1;")
 	if err != nil {
@@ -122,6 +137,7 @@ func DeleteToken(t string, c GorpController) (err error) {
 	return
 }
 
+//CreateToken will create a token
 func CreateToken(t string, user models.User, exp string, c GorpController) (err error) {
 	stmt, err := c.Txn.Prepare("insert into \"tokens\" (\"user_id\",\"token\",\"expirationdate\") values ($1,$2,$3);")
 	if err != nil {
@@ -135,7 +151,8 @@ func CreateToken(t string, user models.User, exp string, c GorpController) (err 
 	return
 }
 
-func CreateUser(name, email, password string, c GorpController) (err error, rows int64) {
+//CreateUser will create a user
+func CreateUser(name, email, password string, c GorpController) (rows int64, err error) {
 	stmt, err := c.Txn.Prepare("insert into \"users\" (\"name\", \"email\", \"issuperuser\", \"password\") VALUES ($1, $2, $3, $4);")
 	if err != nil {
 		return

@@ -6,7 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-//Index test creating user
+//Create an api endpoint to create a user
 func (c User) Create() revel.Result {
 	email := c.Params.Form.Get("email")
 	password := c.Params.Form.Get("password")
@@ -28,7 +28,7 @@ func (c User) Create() revel.Result {
 		return c.RenderJSON(m)
 	}
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	err, rows := CreateUser(name, email, string(hashedPassword), c.GorpController)
+	rows, err := CreateUser(name, email, string(hashedPassword), c.GorpController)
 	if rows == 0 { //no rows have been created
 		m := make(map[string]string)
 		m["message"] = "User with that email already exists."
@@ -36,10 +36,11 @@ func (c User) Create() revel.Result {
 		return c.RenderJSON(m)
 	}
 	if err != nil {
-		m := make(map[string]string)
-		m["error"] = "Database error."
-		c.Response.Status = 400
-		return c.RenderJSON(m)
+		panic(err)
+		// m := make(map[string]string)
+		// m["error"] = "Database error."
+		// c.Response.Status = 400
+		// return c.RenderJSON(m)
 	}
 
 	m := map[string]interface{}{
