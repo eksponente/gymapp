@@ -8,9 +8,6 @@ module:testrunner
 
 
 GET      /                                       App.Index
-POST     /requestToken                           App.RequestToken
-POST     /renewToken                             App.RenewToken
-POST     /destroyToken                           App.DestroyToken
 
 
 POST     /createUser                             App.CreateUser

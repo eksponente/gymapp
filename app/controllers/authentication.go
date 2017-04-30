@@ -17,7 +17,7 @@ import (
 // @Param   email     form    string     true        "User email"
 // @Param   password     form    string     true        "User password"
 // @Success 200 {object} string
-// @Failure 404 {object} APIError "Invalid email."
+// @Failure 404 {object} APIError "Invalid email or password."
 // @Router /token/request/ [post]
 func (c Token) Request() revel.Result {
 	email := c.Params.Form.Get("email")
@@ -33,13 +33,6 @@ func (c Token) Request() revel.Result {
 
 	//Check if username and password valid
 	user, err1 := RetrieveUser(email, c.GorpController)
-	if err1 != nil {
-		m := make(map[string]string)
-		c.Response.Status = 404
-		m["error"] = "Invaassfafssword."
-		m["message"] = err1.Error()
-		return c.RenderJSON(m)
-	}
 	err2 := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err1 != nil || err2 != nil {
 		m := make(map[string]string)
