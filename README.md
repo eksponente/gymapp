@@ -144,7 +144,7 @@ To get the IP
 
    * **Error Response:**
 
-     * **Code:** 400
+    * **Code:** 400
        **Content:**
        <_If email is in an invalid format, it will not create the user._>
        ```json

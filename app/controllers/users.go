@@ -20,7 +20,6 @@ func (c User) Create() revel.Result {
 	}
 
 	//TODO: validate those inputs
-
 	if !valid.IsEmail(email) {
 		m := make(map[string]string)
 		c.Response.Status = 400
@@ -31,7 +30,7 @@ func (c User) Create() revel.Result {
 	rows, err := CreateUser(name, email, string(hashedPassword), c.GorpController)
 	if rows == 0 { //no rows have been created
 		m := make(map[string]string)
-		m["message"] = "User with that email already exists."
+		m["error"] = "User with that email already exists."
 		c.Response.Status = 400
 		return c.RenderJSON(m)
 	}
