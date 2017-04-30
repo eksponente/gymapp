@@ -97,6 +97,8 @@ func (c *GorpController) Rollback() r.Result {
 	return nil
 }
 
+//In the following section we will define functions which will take care of database calls needed
+
 //RetrieveUser will retrieve a user from the database
 func RetrieveUser(email string, c GorpController) (user models.User, err error) {
 	err = c.Txn.SelectOne(&user, "SELECT * FROM users WHERE Email=$1", email)
