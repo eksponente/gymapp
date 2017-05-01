@@ -3,7 +3,6 @@ package controllers
 import (
 	"regexp"
 
-	valid "github.com/asaskevich/govalidator"
 	"github.com/revel/revel"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -14,29 +13,10 @@ func (c User) Create() revel.Result {
 	password := c.Params.Form.Get("password")
 	name := c.Params.Form.Get("name")
 
-	if email == "" || name == "" || password == "" {
-		m := make(map[string]string)
-		c.Response.Status = 400
-		m["error"] = "Required fields: email, name, password."
-		return c.RenderJSON(m)
-	}
-
 	//validate all inputs
-
-	//validate email format
-	if !valid.IsEmail(email) {
-		m := make(map[string]string)
-		c.Response.Status = 400
-		m["error"] = "Invalid email."
-		return c.RenderJSON(m)
-	}
-
-	//validate password (at least 8 chars long, letters and numbers only)
-	c.Validation.Match(password, regexp.MustCompile("^[a-zA-Z0-9]+$")).Message("Password must only contain uppercase and lowercase latin characters or numbers.")
-	c.Validation.MinSize(password, 8).Message("Password must be at least 8 characters long.")
-
-	//validate name (unicode and some punctuation characters)
-	c.Validation.Match(name, regexp.MustCompile("^[\\p{L}\\s'.-]+$")).Message("Name can only contain unicode letters and symbols '.-")
+	c.Validation.Check(email, revel.Required{}, EmailValidator{})
+	c.Validation.Check(name, revel.Required{}, OverrideMesage{revel.Match{regexp.MustCompile("^[\\p{L}\\s'.-]+$")}, "Valid name is required."})
+	c.Validation.Check(password, revel.MinSize{8}, revel.Required{}, RegexpValidator{"Password must only contain latin characters and numbers", "^[a-zA-Z0-9]+$"})
 
 	if c.Validation.HasErrors() {
 		m := map[string]interface{}{
@@ -48,14 +28,14 @@ func (c User) Create() revel.Result {
 
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	rows, err := CreateUser(name, email, string(hashedPassword), c.GorpController)
+	if err != nil {
+		panic(err)
+	}
 	if rows == 0 { //no rows have been created
 		m := make(map[string]string)
 		m["error"] = "User with that email already exists."
 		c.Response.Status = 400
 		return c.RenderJSON(m)
-	}
-	if err != nil {
-		panic(err)
 	}
 
 	m := map[string]interface{}{

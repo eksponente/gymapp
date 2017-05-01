@@ -7,7 +7,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/revel/revel"
 
-	valid "github.com/asaskevich/govalidator"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -16,11 +15,14 @@ func (c Token) Request() revel.Result {
 	email := c.Params.Form.Get("email")
 	password := c.Params.Form.Get("password")
 
-	//check if email is in a valid format
-	if !valid.IsEmail(email) {
-		m := make(map[string]string)
+	c.Validation.Check(email, revel.Required{}, EmailValidator{})
+	c.Validation.Check(password, revel.Required{}, RegexpValidator{"Password must only contain latin characters and numbers", "^[a-zA-Z0-9]+$"})
+
+	if c.Validation.HasErrors() {
+		m := map[string]interface{}{
+			"errors": c.Validation.Errors,
+		}
 		c.Response.Status = 400
-		m["error"] = "Invalid email."
 		return c.RenderJSON(m)
 	}
 
@@ -64,11 +66,6 @@ func (c Token) Renew() revel.Result {
 
 	if errTime != nil {
 		panic(errTime)
-		// c.Response.Status = 500
-		// m := map[string]interface{}{
-		// 	"error": "Internal server error.",
-		// }
-		// return c.RenderJSON(m)
 	}
 
 	if errTok != nil || time.Now().In(Location).After(tokenExp) {
@@ -82,10 +79,6 @@ func (c Token) Renew() revel.Result {
 	err := UpdateTokenExpDate(t, exp, c.GorpController)
 	if err != nil {
 		panic(err)
-		// m := make(map[string]string)
-		// m["error"] = "Internal server error."
-		// c.Response.Status = 500
-		// return c.RenderJSON(m)
 	}
 
 	//return the token
@@ -111,10 +104,6 @@ func (c Token) Destroy() revel.Result {
 	err = DeleteToken(t, c.GorpController)
 	if err != nil {
 		panic(err)
-		// m := make(map[string]string)
-		// m["error"] = "Internal server error."
-		// c.Response.Status = 500
-		// return c.RenderJSON(m)
 	}
 
 	//return the token

@@ -3,9 +3,6 @@ package tests
 import (
 	"fmt"
 
-	"github.com/go-gorp/gorp"
-	"github.com/pressly/goose"
-	db "github.com/revel/modules/db/app"
 	"github.com/revel/revel/testing"
 
 	"gymapp/app/models"
@@ -29,9 +26,6 @@ func (t *AppTest) TestThatIndexPageWorks() {
 
 func (t *AppTest) TestDatabaseConnection() {
 	fmt.Print(r.Config.String("db.spec"))
-	db.Init()
-	Dbm := &gorp.DbMap{Db: db.Db, Dialect: gorp.PostgresDialect{}}
-	goose.Run("up", db.Db, "../app/migrations")
 	var user models.User
 	Dbm.SelectOne(&user, "SELECT * FROM users WHERE Email=$1", "rugilena@gmail.com")
 	t.AssertEqual(user.IsSuperuser, true)
