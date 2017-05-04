@@ -8,3 +8,5 @@ routes/
 !.elasticbeanstalk/*.global.yml
 
 log/
+
+reset_database.sh

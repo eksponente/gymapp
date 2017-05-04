@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"database/sql"
-	"fmt"
 	"gymapp/app/models"
 	"time"
 
@@ -38,7 +37,6 @@ type User struct {
 
 //InitDB initializes the database for the application usages
 func InitDB() {
-	fmt.Print(r.Config.String("db.spec"))
 	db.Init()
 	Dbm = &gorp.DbMap{Db: db.Db, Dialect: gorp.PostgresDialect{}}
 	var err error
@@ -48,7 +46,7 @@ func InitDB() {
 	}
 
 	//run the migrations
-	goose.Run("up", db.Db, "../migrations")
+	goose.Up(db.Db, "../migrations")
 
 	//set up gorp with the databse
 	Dbm.AddTableWithName(models.User{}, "users").SetKeys(true, "user_id")
