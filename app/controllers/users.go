@@ -44,36 +44,3 @@ func (c User) Create() revel.Result {
 	c.Response.Status = 201
 	return c.RenderJSON(m)
 }
-
-//Create an api endpoint to check if a user exists in the databse
-// func (c User) Exists() revel.Result {
-// 	email := c.Params.Form.Get("email")
-//
-// 	//validate all inputs
-// 	c.Validation.Check(email, revel.Required{}, EmailValidator{})
-//
-// 	if c.Validation.HasErrors() {
-// 		m := map[string]interface{}{
-// 			"errors": c.Validation.Errors,
-// 		}
-// 		c.Response.Status = 400
-// 		return c.RenderJSON(m)
-// 	}
-//
-//     Retr
-// 	if rows == 0 { //no rows have been created
-// 		m := make(map[string]string)
-// 		m["error"] = "User with that email already exists."
-// 		c.Response.Status = 400
-// 		return c.RenderJSON(m)
-// 	}
-// 	if err != nil {
-// 		panic(err)
-// 	}
-//
-// 	m := map[string]interface{}{
-// 		"error": nil,
-// 	}
-// 	c.Response.Status = 201
-// 	return c.RenderJSON(m)
-// }

@@ -53,7 +53,7 @@ func (c Token) Request() revel.Result {
 		"expiration": claims["exp"],
 		"error":      nil,
 	}
-	c.Response.Status = 200
+	c.Response.Status = 201
 	return c.RenderJSON(m)
 }
 

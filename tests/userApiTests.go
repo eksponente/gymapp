@@ -30,6 +30,11 @@ func (t *ApiTest) Before() {
 
 }
 
+func (t *ApiTest) After() {
+	println("Tear down")
+}
+
+//USER API TESTS
 func (t *ApiTest) TestCreatingNewUser() {
 	data := url.Values{}
 	data.Set("email", "1@test.com")
@@ -73,8 +78,6 @@ func (t *ApiTest) TestValidEmailsOnly() {
 	}
 
 	t.AssertContains("Invalid email.")
-
-	// t.AssertEqual(res["errors"].([]interface{})[0].(map[string]interface{})["Message"].(string), "Invalid email.")
 }
 
 func (t *ApiTest) TestValidNamesOnly() {
@@ -91,7 +94,6 @@ func (t *ApiTest) TestValidNamesOnly() {
 		panic(errors.New("New user has been created."))
 	}
 
-	// t.AssertEqual(res["errors"].([]interface{})[0].(map[string]interface{})["Message"].(string), "Valid name is required.")
 	t.AssertContains("Valid name is required.")
 }
 
@@ -101,17 +103,19 @@ func (t *ApiTest) TestValidPasswordsOnly() {
 	data.Set("name", "Vardas")
 	data.Set("password", "sla")
 	t.PostForm("/user/create", data)
+
 	t.AssertStatus(400)
+	t.AssertContains("Minimum size is 8")
+
+	data.Set("password", "11111111()")
+	t.PostForm("/user/create", data)
+
+	t.AssertStatus(400)
+	t.AssertContains("Password must only contain latin characters and numbers")
 
 	var user models.User
 	err := controllers.Dbm.SelectOne(&user, "SELECT * FROM users WHERE Email=$1", "3@test.com")
 	if err == nil {
 		panic(errors.New("New user has been created."))
 	}
-
-	t.AssertContains("Minimum size is 8")
-}
-
-func (t *ApiTest) After() {
-	println("Tear down")
 }
