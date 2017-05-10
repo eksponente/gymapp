@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"encoding/json"
 	"errors"
 	"gymapp/app/controllers"
 	"gymapp/app/models"
@@ -81,11 +82,12 @@ func (t *TokenApiTest) TestDestroyingToken() {
 	println(string(t.ResponseBody))
 	t.AssertStatus(201)
 
-	var token models.Token
-	controllers.Dbm.SelectOne(&token, "SELECT * FROM tokens WHERE user_id=$1", user.UserId)
+	var resp map[string]interface{}
+	json.Unmarshal(t.ResponseBody, &resp)
+	token := resp["token"].(string)
 
 	data = url.Values{}
-	data.Set("token", token.Token)
+	data.Set("token", token)
 	t.PostForm("/token/destroy", data)
 	t.AssertStatus(200)
 	result, _ := controllers.Dbm.Exec("SELECT * FROM tokens WHERE user_id=$1", user.UserId)
@@ -101,18 +103,20 @@ func (t *TokenApiTest) TestRenewingToken() {
 	t.PostForm("/token/request", data)
 	t.AssertStatus(201)
 
-	var token models.Token
-	controllers.Dbm.SelectOne(&token, "SELECT * FROM tokens WHERE user_id=$1", user.UserId)
-	oldTokenExp, _ := time.ParseInLocation(time.RFC3339, token.ExpirationDate, controllers.Location)
+	var resp map[string]interface{}
+	json.Unmarshal(t.ResponseBody, &resp)
+	token := resp["token"].(string)
+	oldTokenExp, _ := time.ParseInLocation(time.RFC3339, resp["expiration"].(string), controllers.Location)
 
 	time.Sleep(2 * time.Second)
 
 	data = url.Values{}
-	data.Set("token", token.Token)
+	data.Set("token", token)
 	t.PostForm("/token/renew", data)
 	t.AssertStatus(200)
 	controllers.Dbm.SelectOne(&token, "SELECT * FROM tokens WHERE user_id=$1", user.UserId)
-	t.AssertContains(token.ExpirationDate)
-	newTokenExp, _ := time.ParseInLocation(time.RFC3339, token.ExpirationDate, controllers.Location)
+
+	json.Unmarshal(t.ResponseBody, &resp)
+	newTokenExp, _ := time.ParseInLocation(time.RFC3339, resp["expiration"].(string), controllers.Location)
 	t.Assert(newTokenExp.After(oldTokenExp))
 }
