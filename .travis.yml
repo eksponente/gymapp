@@ -10,7 +10,7 @@ services:
 
 env:
   - RDS_DB_TEST_NAME=gymapptest
-  - RDS_DB_USERNAME=travis
+  - RDS_DB_USERNAME=testuser
   - RDS_DB_PASSWORD=slaptazodis
   - RDS_HOSTNAME=127.0.0.1
 
@@ -22,8 +22,8 @@ install:
 
 before_script:
   - psql -c 'create database gymapptest;' -U postgres
-  - psql -c "create user travis with password 'slaptazodis';" -U postgres
-  - psql -c "grant all privileges on database gymapptest to travis;" -U postgres
+  - psql -c "create user testuser with password 'slaptazodis';" -U postgres
+  - psql -c "grant all privileges on database gymapptest to testuser;" -U postgres
   - go get github.com/revel/cmd/revel
 
 script:
