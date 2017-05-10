@@ -28,14 +28,14 @@ func (c User) Create() revel.Result {
 
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	rows, err := CreateUser(name, email, string(hashedPassword), c.GorpController)
-	if err != nil {
-		panic(err)
-	}
 	if rows == 0 { //no rows have been created
 		m := make(map[string]string)
 		m["error"] = "User with that email already exists."
 		c.Response.Status = 400
 		return c.RenderJSON(m)
+	}
+	if err != nil {
+		panic(err)
 	}
 
 	m := map[string]interface{}{
