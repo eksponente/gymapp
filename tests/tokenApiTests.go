@@ -112,10 +112,14 @@ func (t *TokenApiTest) TestRenewingToken() {
 
 	data = url.Values{}
 	data.Set("token", token)
+
+	var tok models.Token
+	controllers.Dbm.SelectOne(&tok, "SELECT * FROM tokens WHERE user_id=$1", user.UserId)
+	println(tok.Token)
+
 	t.PostForm("/token/renew", data)
 	print(t.ResponseBody)
 	t.AssertStatus(200)
-	controllers.Dbm.SelectOne(&token, "SELECT * FROM tokens WHERE user_id=$1", user.UserId)
 
 	json.Unmarshal(t.ResponseBody, &resp)
 	newTokenExp, _ := time.ParseInLocation(time.RFC3339, resp["expiration"].(string), controllers.Location)
