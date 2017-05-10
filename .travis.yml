@@ -3,6 +3,8 @@ language: go
 go:
   - 1.4.2
 
+addons:
+  postgresql: "9.6"
 services:
   - postgresql
 
@@ -10,6 +12,8 @@ go_import_path: gymapp
 
 before_install:
   - go get github.com/tools/godep
+
+
 
 install:
   - godep restore
