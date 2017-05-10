@@ -9,10 +9,7 @@ services:
   - postgresql
 
 env:
-  - RDS_DB_TEST_NAME=gymapptest
-  - RDS_DB_USERNAME=testuser
-  - RDS_DB_PASSWORD=slaptazodis
-  - RDS_HOSTNAME=127.0.0.1
+  - RDS_DB_TEST_NAME=gymapptest RDS_DB_USERNAME=testuser RDS_DB_PASSWORD=slaptazodis RDS_HOSTNAME=127.0.0.1
 
 go_import_path: gymapp
 
