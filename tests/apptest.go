@@ -1,6 +1,8 @@
 package tests
 
 import (
+
+	"fmt"
 	"github.com/revel/revel/testing"
 
 	"gymapp/app/controllers"
