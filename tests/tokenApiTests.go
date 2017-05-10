@@ -106,8 +106,6 @@ func (t *TokenApiTest) TestRenewingToken() {
 	var resp map[string]interface{}
 	json.Unmarshal(t.ResponseBody, &resp)
 	token := resp["token"].(string)
-	println("CIA TOKENAS ZIUREK --------------")
-	println(token)
 	oldTokenExp, _ := time.ParseInLocation(time.RFC3339, resp["expiration"].(string), controllers.Location)
 
 	time.Sleep(2 * time.Second)
@@ -115,6 +113,7 @@ func (t *TokenApiTest) TestRenewingToken() {
 	data = url.Values{}
 	data.Set("token", token)
 	t.PostForm("/token/renew", data)
+	print(t.ResponseBody)
 	t.AssertStatus(200)
 	controllers.Dbm.SelectOne(&token, "SELECT * FROM tokens WHERE user_id=$1", user.UserId)
 
