@@ -106,6 +106,8 @@ func (t *TokenApiTest) TestRenewingToken() {
 	var resp map[string]interface{}
 	json.Unmarshal(t.ResponseBody, &resp)
 	token := resp["token"].(string)
+	println("CIA TOKENAS ZIUREK --------------")
+	println(token)
 	oldTokenExp, _ := time.ParseInLocation(time.RFC3339, resp["expiration"].(string), controllers.Location)
 
 	time.Sleep(2 * time.Second)

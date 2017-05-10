@@ -99,13 +99,13 @@ func (c *GorpController) Rollback() r.Result {
 
 //RetrieveUser will retrieve a user from the database
 func RetrieveUser(email string, c GorpController) (user models.User, err error) {
-	err = c.Txn.SelectOne(&user, "SELECT * FROM users WHERE Email=$1", email)
+	err = c.Txn.SelectOne(&user, "SELECT * FROM \"users\" WHERE \"email\"=$1;", email)
 	return
 }
 
 //RetrieveToken will retrieve a token from the database
 func RetrieveToken(t string, c GorpController) (token models.Token, err error) {
-	err = c.Txn.SelectOne(&token, "SELECT * FROM tokens WHERE Token=$1", t)
+	err = c.Txn.SelectOne(&token, "SELECT * FROM \"tokens\" WHERE \"token\"=$1;", t)
 	return
 }
 
