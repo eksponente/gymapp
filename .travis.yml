@@ -36,3 +36,5 @@ deploy:
   app: "gymapp"
   env: "gymapp-env"
   bucket_name: "arn:aws:s3:::elasticbeanstalk-us-west-2-523108629397"
+  on:
+    branch: master
