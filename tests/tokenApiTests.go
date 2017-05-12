@@ -57,7 +57,7 @@ func (t *TokenApiTest) TestCreatingNewToken() {
 	var token models.Token
 	controllers.Dbm.SelectOne(&token, "SELECT * FROM tokens WHERE user_id=$1", user.UserId)
 	t.AssertContains(token.Token)
-	t.AssertContains(token.ExpirationDate.Format(time.RFC3339))
+	t.AssertContains(token.ExpirationDate.In(controllers.Location).Format(time.RFC3339))
 }
 
 func (t *TokenApiTest) TestUnableToCreateTokenWithWrongPassword() {
