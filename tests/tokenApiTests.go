@@ -57,7 +57,7 @@ func (t *TokenApiTest) TestCreatingNewToken() {
 	var token models.Token
 	controllers.Dbm.SelectOne(&token, "SELECT * FROM tokens WHERE user_id=$1", user.UserId)
 	t.AssertContains(token.Token)
-	t.AssertContains(token.ExpirationDate)
+	t.AssertContains(token.ExpirationDate.Format(time.RFC3339))
 }
 
 func (t *TokenApiTest) TestUnableToCreateTokenWithWrongPassword() {
@@ -125,6 +125,7 @@ func (t *TokenApiTest) TestRenewingToken() {
 }
 
 func (t *TokenApiTest) TestDatabase() {
+
 	controllers.Dbm.Exec("INSERT INTO \"tokens\" (\"user_id\",\"token\",\"expirationdate\") VALUES ($1,$2,$3);", user.UserId, "tokenas", time.Now().Add(time.Hour*24*14).In(controllers.Location).Format(time.RFC3339))
 	var tok models.Token
 	err := controllers.Dbm.SelectOne(&tok, "SELECT * FROM \"tokens\" WHERE \"user_id\"=$1;", user.UserId)
