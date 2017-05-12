@@ -1,40 +1,31 @@
 language: go
-
 go:
-  - 1.4.2
-
+- 1.4.2
 sudo: false
 dist: trusty
 addons:
-  postgresql: "9.5"
+  postgresql: '9.5'
 services:
-  - postgresql
-
+- postgresql
 go_import_path: gymapp
-
 before_install:
-  - go get github.com/tools/godep
-
+- go get github.com/tools/godep
 install:
-  - godep restore
-
+- godep restore
 before_script:
-  - psql -c 'create database gymapptest;' -U postgres
-  - psql -c "create user testuser with password 'slaptazodis';" -U postgres
-  - psql -c "grant all privileges on database gymapptest to testuser;" -U postgres
-  - go get github.com/revel/cmd/revel
-
+- psql -c 'create database gymapptest;' -U postgres
+- psql -c "create user testuser with password 'slaptazodis';" -U postgres
+- psql -c "grant all privileges on database gymapptest to testuser;" -U postgres
+- go get github.com/revel/cmd/revel
 script:
-  - revel test gymapp testing
-
+- revel test gymapp testing
 deploy:
   provider: elasticbeanstalk
   access_key_id: AKIAI64YVROSEV7CBQNA
   secret_access_key:
-    secure: "2BCJr2tYUaRsY//OBGFw/en51CSJpoA3ufLyGIx2kziXbNLeO+mpzqwDRdb1gcEhahES4nwLS44KK3nwTVp9J7v+JIDzjqnDyc6YouJcgi0RUMmaK8crSRCDCUpxgPRa/Ru8QGEG5KpNlZFDkGX3cRPYThyLJta7+yNsLqoB8Oz68yuKPQkl3OkFLjUi949nxtet9sKl9+V0bE98AS+N9yfrgzLuWwLvZdvdER8JbM/bB0BMOCHpLlcRmGUP2jQWJnqKtqR7FYU8WgNiTGCo5a5lPfUYHAb4wpmw0T4G8Clh2IMbNgt9mo09QQd0UPaRlKPtmOl5Hz3DfdvN/U9QhE5DFnxUkmZh9FtPNp231Mkcj16mbS6kivVJ2JncV5w/kJXGUiTC7FVUicFtPiYM1iEkR1NcKL9XOnuLvvSw3FmLPpi5wEltkEOL6AgZb4/7aM7e69n2HL4jiJH7l5igfPyZ4UsYYBfDsYfCZFvidmtGx2+YR4g0gIRhMM/88L5Kf2JkAUJ2AamSoCzHF54w1Enq3LsF5YwO/hibUy89SY1sBqnA3rESNiFGRzogbCHN0wHRPFzDQsvSzqAGI7j8HSo1UsFmFutDDWr0yMlFf6BF/MIIaY4qXxKZjYmYFULYFJNMxi9jFWt/N+g8rlWdui5/bvx2pJKcEk9OgpfKvpU="
-  region: "us-west-2"
-  app: "gymapp"
-  env: "gymapp-env"
-  bucket_name: "arn:aws:s3:::elasticbeanstalk-us-west-2-523108629397"
+    secure: pp4Jl/AQQIFjSaw0NGclkzGRgTbTjPjI8SKXE0YnxxRNm6bVlfI+ys9ytasVWMgM5s+IAItzz4EMC9KK7RbU5oLuvFrHQaOkzO8f3JHP5b94+xJPeO1TeKaMidrjXBBhFUARbQ7IBRzqtWoxgJnpxqKT3wkGPcvAlIZlGHTUsL9nRHIHyfamo4HF8INplmDIOllxnprHV0CAhLDqrskRn1859lGS7P+ECCtUSx1STwTqmoRmXR3JFlDhXhYClywN1q4hinJgPgartD0MJOZKYJ6zHCDHNaKmIvuo4mWptjoRqL13rjuIHepU6cPMTky65EziFovdbEZAZ2VtHH4INGn0Vlhs8qu4KmFflUJa/aoDj3pLmTkEAsF9Uv6OFxx63LpVpGKoqZYIvf13CvUWk1JbDe23NvHGSK1TTbhjff98Q+uOsj78UPsKWUmPzU5YnEyn7I1SKY6Yo5XJWKINCuNLdRhTiq4AiV4Ke2PDp7Vr5caoF/o+EtIuwqVB5b4NCAHVa9CnqG+ej0wTd+lxQHst24PBJs8OTMULd5pj2Bu9L5dTkYdfvdP/TP4B68wstLIqztUEPQjIvT8ri8s8bjZw1iXdxL5IrzbSQ18cG5auy2vCpgsb1ljnMOvtIT19Lp2zeaKtzZ5JrF5RXQO3Je/jE196Kjb5ta9F1TvwA70=
+  region: us-west-2
+  app: gymapp
+  env: gymapp-env
   on:
     branch: master
