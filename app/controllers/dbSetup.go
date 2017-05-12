@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"database/sql"
-	"fmt"
 	"gymapp/app/models"
 	"time"
 
@@ -38,7 +37,6 @@ type User struct {
 
 //InitDB initializes the database for the application usages
 func InitDB() {
-	fmt.Print(r.Config.String("db.spec"))
 	db.Init()
 	Dbm = &gorp.DbMap{Db: db.Db, Dialect: gorp.PostgresDialect{}}
 	var err error
@@ -48,13 +46,14 @@ func InitDB() {
 	}
 
 	//run the migrations
-	goose.Run("up", db.Db, "../migrations")
+	goose.Up(db.Db, "../migrations")
 
 	//set up gorp with the databse
 	Dbm.AddTableWithName(models.User{}, "users").SetKeys(true, "user_id")
 	Dbm.AddTableWithName(models.Token{}, "tokens")
 
 	Dbm.TraceOn("[gorp]", r.INFO)
+
 }
 
 //GorpController custom controllers
@@ -101,13 +100,13 @@ func (c *GorpController) Rollback() r.Result {
 
 //RetrieveUser will retrieve a user from the database
 func RetrieveUser(email string, c GorpController) (user models.User, err error) {
-	err = c.Txn.SelectOne(&user, "SELECT * FROM users WHERE Email=$1", email)
+	err = c.Txn.SelectOne(&user, "SELECT * FROM \"users\" WHERE \"email\"=$1;", email)
 	return
 }
 
 //RetrieveToken will retrieve a token from the database
 func RetrieveToken(t string, c GorpController) (token models.Token, err error) {
-	err = c.Txn.SelectOne(&token, "SELECT * FROM tokens WHERE Token=$1", t)
+	err = c.Txn.SelectOne(&token, "SELECT * FROM \"tokens\" WHERE \"token\"=$1;", t)
 	return
 }
 

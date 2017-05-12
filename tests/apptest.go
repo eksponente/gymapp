@@ -1,13 +1,10 @@
 package tests
 
 import (
-	"fmt"
-
 	"github.com/revel/revel/testing"
 
+	"gymapp/app/controllers"
 	"gymapp/app/models"
-
-	r "github.com/revel/revel"
 )
 
 type AppTest struct {
@@ -25,9 +22,8 @@ func (t *AppTest) TestThatIndexPageWorks() {
 }
 
 func (t *AppTest) TestDatabaseConnection() {
-	fmt.Print(r.Config.String("db.spec"))
 	var user models.User
-	Dbm.SelectOne(&user, "SELECT * FROM users WHERE Email=$1", "rugilena@gmail.com")
+	controllers.Dbm.SelectOne(&user, "SELECT * FROM users WHERE Email=$1", "rugilena@gmail.com")
 	t.AssertEqual(user.IsSuperuser, true)
 
 }

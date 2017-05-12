@@ -21,5 +21,9 @@ func Up20170421174835(tx *sql.Tx) error {
 
 // Down20170421174835 should send the database back to the state it was from before Up was ran
 func Down20170421174835(tx *sql.Tx) error {
+	_, err := tx.Exec("ALTER TABLE users DROP CONSTRAINT unique_email;")
+	if err != nil {
+		return err
+	}
 	return nil
 }
