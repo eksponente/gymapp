@@ -128,7 +128,10 @@ func (t *TokenApiTest) TestDatabase() {
 	controllers.Dbm.Exec("INSERT INTO \"tokens\" (\"user_id\",\"token\",\"expirationdate\") VALUES ($1,$2,$3);", user.UserId, "tokenas", time.Now().Add(time.Hour*24*14).In(controllers.Location).Format(time.RFC3339))
 	var tok models.Token
 	controllers.Dbm.SelectOne(&tok, "SELECT * FROM \"tokens\" WHERE \"user_id\"=$1;", user.UserId)
+	res, _ := controllers.Dbm.Exec("SELECT * FROM \"tokens\";")
+	rows, _ := res.RowsAffected()
 	println("ZIUREK CIA")
+	println(rows)
 	println(tok.Token)
 	t.AssertEqual("tokenas", tok.Token)
 }
