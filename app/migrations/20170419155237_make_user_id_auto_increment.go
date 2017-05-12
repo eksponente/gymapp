@@ -12,7 +12,7 @@ func init() {
 
 // Up20170419155237 updates the database to the new requirements
 func Up20170419155237(tx *sql.Tx) error {
-	_, err := tx.Exec("CREATE SEQUENCE user_id_seq; ALTER TABLE users ALTER user_id SET DEFAULT nextval('user_id_seq'); SELECT setval('user_id_seq', 1);")
+	_, err := tx.Exec("CREATE SEQUENCE IF NOT EXISTS user_id_seq; ALTER TABLE users ALTER user_id SET DEFAULT nextval('user_id_seq'); SELECT setval('user_id_seq', 1);")
 	if err != nil {
 		return err
 	}

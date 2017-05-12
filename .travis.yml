@@ -1,0 +1,38 @@
+language: go
+
+go:
+  - 1.4.2
+
+sudo: false
+dist: trusty
+addons:
+  postgresql: "9.5"
+services:
+  - postgresql
+
+go_import_path: gymapp
+
+before_install:
+  - go get github.com/tools/godep
+
+install:
+  - godep restore
+
+before_script:
+  - psql -c 'create database gymapptest;' -U postgres
+  - psql -c "create user testuser with password 'slaptazodis';" -U postgres
+  - psql -c "grant all privileges on database gymapptest to testuser;" -U postgres
+  - go get github.com/revel/cmd/revel
+
+script:
+  - revel test gymapp testing
+
+deploy:
+  provider: elasticbeanstalk
+  access_key_id: AKIAI64YVROSEV7CBQNA
+  secret_access_key:
+    secure: "2BCJr2tYUaRsY//OBGFw/en51CSJpoA3ufLyGIx2kziXbNLeO+mpzqwDRdb1gcEhahES4nwLS44KK3nwTVp9J7v+JIDzjqnDyc6YouJcgi0RUMmaK8crSRCDCUpxgPRa/Ru8QGEG5KpNlZFDkGX3cRPYThyLJta7+yNsLqoB8Oz68yuKPQkl3OkFLjUi949nxtet9sKl9+V0bE98AS+N9yfrgzLuWwLvZdvdER8JbM/bB0BMOCHpLlcRmGUP2jQWJnqKtqR7FYU8WgNiTGCo5a5lPfUYHAb4wpmw0T4G8Clh2IMbNgt9mo09QQd0UPaRlKPtmOl5Hz3DfdvN/U9QhE5DFnxUkmZh9FtPNp231Mkcj16mbS6kivVJ2JncV5w/kJXGUiTC7FVUicFtPiYM1iEkR1NcKL9XOnuLvvSw3FmLPpi5wEltkEOL6AgZb4/7aM7e69n2HL4jiJH7l5igfPyZ4UsYYBfDsYfCZFvidmtGx2+YR4g0gIRhMM/88L5Kf2JkAUJ2AamSoCzHF54w1Enq3LsF5YwO/hibUy89SY1sBqnA3rESNiFGRzogbCHN0wHRPFzDQsvSzqAGI7j8HSo1UsFmFutDDWr0yMlFf6BF/MIIaY4qXxKZjYmYFULYFJNMxi9jFWt/N+g8rlWdui5/bvx2pJKcEk9OgpfKvpU="
+  region: "us-west-2"
+  app: "gymapp"
+  env: "gymapp-env"
+  bucket_name: "arn:aws:s3:::elasticbeanstalk-us-west-2-523108629397"

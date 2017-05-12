@@ -31,5 +31,13 @@ func Up20170420220207(tx *sql.Tx) error {
 
 // Down20170420220207 should send the database back to the state it was from before Up was ran
 func Down20170420220207(tx *sql.Tx) error {
+	_, err := tx.Exec("DELETE FROM \"users\" WHERE \"username\" = $1", "Admin")
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec("DELETE FROM \"users\" WHERE \"name\" = $1", "Admin")
+	if err != nil {
+		return err
+	}
 	return nil
 }

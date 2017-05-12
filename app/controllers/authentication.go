@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -44,7 +43,6 @@ func (c Token) Request() revel.Result {
 	token.Claims = claims
 	secret, _ := revel.Config.String("secret")
 	signedToken, _ := token.SignedString([]byte(secret))
-	fmt.Println(signedToken)
 	CreateToken(string(signedToken), user, claims["exp"].(string), c.GorpController)
 
 	//return the token
@@ -53,7 +51,7 @@ func (c Token) Request() revel.Result {
 		"expiration": claims["exp"],
 		"error":      nil,
 	}
-	c.Response.Status = 200
+	c.Response.Status = 201
 	return c.RenderJSON(m)
 }
 
@@ -62,12 +60,7 @@ func (c Token) Renew() revel.Result {
 	t := c.Params.Form.Get("token")
 	token, errTok := RetrieveToken(t, c.GorpController)
 
-	tokenExp, errTime := time.ParseInLocation(time.RFC3339, token.ExpirationDate, Location)
-
-	if errTime != nil {
-		panic(errTime)
-	}
-
+	tokenExp := token.ExpirationDate
 	if errTok != nil || time.Now().In(Location).After(tokenExp) {
 		m := make(map[string]string)
 		c.Response.Status = 404
