@@ -60,7 +60,6 @@ func (c Token) Renew() revel.Result {
 	t := c.Params.Form.Get("token")
 	token, errTok := RetrieveToken(t, c.GorpController)
 
-	// tokenExp, errTime := time.ParseInLocation(time.RFC3339, token.ExpirationDate, Location)
 	tokenExp := token.ExpirationDate
 	if errTok != nil || time.Now().In(Location).After(tokenExp) {
 		m := make(map[string]string)
@@ -68,9 +67,6 @@ func (c Token) Renew() revel.Result {
 		m["error"] = "Token not found or already expired."
 		return c.RenderJSON(m)
 	}
-	// if errTime != nil {
-	// 	panic(errTime)
-	// }
 
 	exp := time.Now().Add(time.Hour * 24 * 14).Format(time.RFC3339)
 	err := UpdateTokenExpDate(t, exp, c.GorpController)

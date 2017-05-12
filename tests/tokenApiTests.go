@@ -132,10 +132,5 @@ func (t *TokenApiTest) TestDatabase() {
 	if err != nil {
 		panic(err)
 	}
-	res, _ := controllers.Dbm.Exec("SELECT * FROM \"tokens\";")
-	rows, _ := res.RowsAffected()
-	println("ZIUREK CIA")
-	println(rows)
-	println(tok.Token)
 	t.AssertEqual("tokenas", tok.Token)
 }
