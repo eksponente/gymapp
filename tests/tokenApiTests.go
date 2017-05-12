@@ -25,7 +25,7 @@ var user models.User
 func (t *TokenApiTest) Before() {
 	println("Set up")
 	if name, _ := revel.Config.String("db.name"); name != "gymapptest" {
-		panic(errors.New("Not connected to test database. RDS_DB_NAME must be gymapptest."))
+		panic(errors.New("Not connected to test database.  RDS_DB_NAME must be gymapptest."))
 	}
 	println("MIGRATING DOWN")
 	goose.DownTo(db.Db, "../app/migrations", 20170419150037)
