@@ -130,4 +130,5 @@ func (t *TokenApiTest) TestDatabase() {
 	controllers.Dbm.SelectOne(&tok, "SELECT * FROM tokens WHERE user_id=$1", user.UserId)
 	println("ZIUREK CIA")
 	println(tok.Token)
+	t.AssertEqual("tokenas", tok.Token)
 }

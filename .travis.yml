@@ -27,4 +27,4 @@ before_script:
   - go get github.com/revel/cmd/revel
 
 script:
-  - revel test gymapp testing
+  - revel test gymapp testing TokenApiTest.TestDatabase
