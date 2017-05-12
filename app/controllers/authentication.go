@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -44,7 +43,6 @@ func (c Token) Request() revel.Result {
 	token.Claims = claims
 	secret, _ := revel.Config.String("secret")
 	signedToken, _ := token.SignedString([]byte(secret))
-	fmt.Println(signedToken)
 	CreateToken(string(signedToken), user, claims["exp"].(string), c.GorpController)
 
 	//return the token
