@@ -125,7 +125,7 @@ func (t *TokenApiTest) TestRenewingToken() {
 }
 
 func (t *TokenApiTest) TestDatabase() {
-	controllers.Dbm.Exec("insert into \"tokens\" (\"user_id\",\"token\",\"expirationdate\") values ($1,$2,$3);", user.UserId, "tokenas", time.Now().Add(time.Hour*24*14).Format(time.RFC3339))
+	controllers.Dbm.Exec("INSERT INTO \"tokens\" (\"user_id\",\"token\",\"expirationdate\") VALUES ($1,$2,$3);", user.UserId, "tokenas", time.Now().Add(time.Hour*24*14).Format(time.RFC3339))
 	var tok models.Token
 	controllers.Dbm.SelectOne(&tok, "SELECT * FROM tokens WHERE user_id=$1", user.UserId)
 	println("ZIUREK CIA")
