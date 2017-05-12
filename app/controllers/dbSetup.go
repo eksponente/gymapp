@@ -53,7 +53,6 @@ func InitDB() {
 	Dbm.AddTableWithName(models.Token{}, "tokens")
 
 	Dbm.TraceOn("[gorp]", r.INFO)
-	Dbm.TraceOn("[gorpErorr]", r.ERROR)
 
 }
 
