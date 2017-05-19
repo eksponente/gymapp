@@ -16,10 +16,10 @@ before_script:
 - psql -c 'create database gymapptest;' -U postgres
 - psql -c "create user testuser with password 'slaptazodis';" -U postgres
 - psql -c "grant all privileges on database gymapptest to testuser;" -U postgres
-- psql -c "create extension postgis;" -U postgres
-- psql -c "create extension fuzzystrmatch;" -U postgres
-- psql -c "create extension postgis_topology;" -U postgres
-- psql -c "create extension postgis_tiger_geocoder;" -U postgres
+- psql -c "create extension postgis;" -U postgres -d gymapptest
+- psql -c "create extension fuzzystrmatch;" -U postgres -d gymapptest
+- psql -c "create extension postgis_topology;" -U postgres -d gymapptest
+- psql -c "create extension postgis_tiger_geocoder;" -U postgres -d gymapptest
 - go get github.com/revel/cmd/revel
 script:
 - revel test gymapp testing
