@@ -27,7 +27,7 @@ func (c User) Create() revel.Result {
 	}
 
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	rows, err := CreateUser(name, email, string(hashedPassword), c.GorpController)
+	rows, err := CreateUser(name, email, string(hashedPassword), c.GorpController.Txn)
 	if rows == 0 { //no rows have been created
 		m := make(map[string]string)
 		m["error"] = "User with that email already exists."

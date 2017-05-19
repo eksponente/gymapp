@@ -18,6 +18,11 @@ To get the IP
     eb deploy
     eb status
 
+#To set up database on AWS RDS
+
+Follow this tutorial: http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html#Appendix.PostgreSQL.CommonDBATasks.PostGIS
+to set up PostGIS
+
 ## API documentation
 # <<Tokens>>
    **Request a token**

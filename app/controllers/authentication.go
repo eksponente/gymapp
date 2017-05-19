@@ -26,7 +26,7 @@ func (c Token) Request() revel.Result {
 	}
 
 	//Check if username and password valid
-	user, err1 := RetrieveUser(email, c.GorpController)
+	user, err1 := RetrieveUser(email, c.GorpController.Txn)
 	err2 := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err1 != nil || err2 != nil {
 		m := make(map[string]string)
@@ -43,7 +43,7 @@ func (c Token) Request() revel.Result {
 	token.Claims = claims
 	secret, _ := revel.Config.String("secret")
 	signedToken, _ := token.SignedString([]byte(secret))
-	CreateToken(string(signedToken), user, claims["exp"].(string), c.GorpController)
+	CreateToken(string(signedToken), user, claims["exp"].(string), c.GorpController.Txn)
 
 	//return the token
 	m := map[string]interface{}{
@@ -58,7 +58,7 @@ func (c Token) Request() revel.Result {
 //Renew an api endpoint to renew a certain token to be valid up until 2 weeks from now.
 func (c Token) Renew() revel.Result {
 	t := c.Params.Form.Get("token")
-	token, errTok := RetrieveToken(t, c.GorpController)
+	token, errTok := RetrieveToken(t, c.GorpController.Txn)
 
 	tokenExp := token.ExpirationDate
 	if errTok != nil || time.Now().In(Location).After(tokenExp) {
@@ -69,7 +69,7 @@ func (c Token) Renew() revel.Result {
 	}
 
 	exp := time.Now().Add(time.Hour * 24 * 14).Format(time.RFC3339)
-	err := UpdateTokenExpDate(t, exp, c.GorpController)
+	err := UpdateTokenExpDate(t, exp, c.GorpController.Txn)
 	if err != nil {
 		panic(err)
 	}
@@ -87,14 +87,14 @@ func (c Token) Renew() revel.Result {
 //Destroy an api endpoint to destroy a token.
 func (c Token) Destroy() revel.Result {
 	t := c.Params.Form.Get("token")
-	_, err := RetrieveToken(t, c.GorpController)
+	_, err := RetrieveToken(t, c.GorpController.Txn)
 	if err != nil {
 		m := make(map[string]string)
 		m["error"] = "Token not found."
 		c.Response.Status = 404
 		return c.RenderJSON(m)
 	}
-	err = DeleteToken(t, c.GorpController)
+	err = DeleteToken(t, c.GorpController.Txn)
 	if err != nil {
 		panic(err)
 	}
